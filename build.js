@@ -24,12 +24,5 @@ for (var k in vars) {
   }
 }
 
-for (const [placeholder, value] of Object.entries(replacements)) {
-  if (!value) {
-    console.warn(`⚠️  Missing env var for ${placeholder}`);
-  }
-  js = js.replaceAll(placeholder, value || "");
-}
-
 fs.writeFileSync("dist/app.js", js);
-console.log("✅ Build complete — secrets injected");
+console.log("[(:)] Build done");
