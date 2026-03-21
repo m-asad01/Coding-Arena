@@ -15,7 +15,8 @@ const vars = {
   "__FIREBASE_STORAGE_BUCKET__":      process.env.FIREBASE_STORAGE_BUCKET,
   "__FIREBASE_MESSAGING_SENDER_ID__": process.env.FIREBASE_MESSAGING_SENDER_ID,
   "__FIREBASE_APP_ID__":              process.env.FIREBASE_APP_ID,
-  "__JUDGE_URL__":                    process.env.JUDGE_URL || "",
+  "__JUDGE_URL__":                    process.env.JUDGE_URL    || "",
+  "__JUDGE_SECRET__":                 process.env.JUDGE_SECRET || "",
 };
 
 for (var k in vars) {
@@ -25,4 +26,4 @@ for (var k in vars) {
 }
 
 fs.writeFileSync("dist/app.js", js);
-console.log("[(:)] Build done");
+console.log("[!] Build done");
