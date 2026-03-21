@@ -1024,11 +1024,9 @@ async function judgeSingle(code, lang, inputData, expectedOutput, idx, hidden) {
 // JavaScript  → runs natively in the browser (no server needed)
 // Python/Java/C++ → sent to your PythonAnywhere Flask server
 //
-// SETUP: set JUDGE_URL below to your PythonAnywhere app URL
-//   e.g. "https://yourusername.pythonanywhere.com"
-//   Leave as "" to disable server judging (JS-only mode)
 // ============================================================
-const JUDGE_URL = "__JUDGE_URL__"; // ← paste your PythonAnywhere URL here
+const JUDGE_URL    = "__JUDGE_URL__";    // injected by build.js
+const JUDGE_SECRET = "__JUDGE_SECRET__"; // injected by build.js
 
 async function runCode(code, lang, inputData) {
   if (lang === "javascript") {
@@ -1043,7 +1041,7 @@ async function runCode(code, lang, inputData) {
   try {
     const resp = await fetch(JUDGE_URL + "/execute", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Judge-Token": JUDGE_SECRET },
       body: JSON.stringify({ language: lang, code, stdin: inputData }),
     });
 
