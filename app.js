@@ -379,6 +379,10 @@ async function pickRole(role) {
 }
 
 async function enterApp(user, role) {
+    // Downgrade to solver if this user isn't an allowed host
+  if (role === "host" && !ALLOWED_HOST_UIDS.has(user.uid)) {
+    role = "solver";
+  }
   _userRole    = role;
   _currentUser = user;
 
