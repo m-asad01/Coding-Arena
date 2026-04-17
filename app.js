@@ -1,3 +1,9 @@
+// ── Accounts permitted to use Host mode ──
+const ALLOWED_HOST_UIDS = new Set([
+  "i7NvuygvZOYyWcWpSaLm6uiNMzM2",
+   "cvmuwQveDwdeezzeXZsiuhP2Zuk2"
+]);
+
 // ============================================================
 // FIREBASE CONFIG — paste your own values from Firebase Console
 // ============================================================
@@ -373,9 +379,17 @@ async function pickRole(role) {
 }
 
 async function enterApp(user, role) {
+    // Downgrade to solver if this user isn't an allowed host
+  if (role === "host" && !ALLOWED_HOST_UIDS.has(user.uid)) {
+    role = "solver";
+  }
   _userRole    = role;
   _currentUser = user;
-
+    // Hide the "Switch to Host" button for non-permitted users
+    const switchBtns = document.querySelectorAll("button[onclick='switchRole()']");
+    switchBtns.forEach(btn => {
+      btn.style.display = ALLOWED_HOST_UIDS.has(user.uid) ? "" : "none";
+    });
   if (role === "host") {
     await migrateOldData(user.uid); // one-time, no-op after first run
     await loadProblems();           // loads only THIS host's problems
@@ -394,6 +408,13 @@ async function enterApp(user, role) {
 
 async function switchRole() {
   const newRole = _userRole === "host" ? "solver" : "host";
+
+  // Block non-permitted users from becoming host
+  if (newRole === "host" && !ALLOWED_HOST_UIDS.has(_currentUser?.uid)) {
+    toast("Host access is restricted to authorised accounts.", "er");
+    return;
+  }
+
   const confirmed = confirm(
     `Switch to ${newRole.toUpperCase()} mode?\n\n` +
     (newRole === "host"
