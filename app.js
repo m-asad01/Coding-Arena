@@ -385,7 +385,11 @@ async function enterApp(user, role) {
   }
   _userRole    = role;
   _currentUser = user;
-
+    // Hide the "Switch to Host" button for non-permitted users
+    const switchBtns = document.querySelectorAll("button[onclick='switchRole()']");
+    switchBtns.forEach(btn => {
+      btn.style.display = ALLOWED_HOST_UIDS.has(user.uid) ? "" : "none";
+    });
   if (role === "host") {
     await migrateOldData(user.uid); // one-time, no-op after first run
     await loadProblems();           // loads only THIS host's problems
